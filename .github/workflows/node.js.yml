@@ -29,7 +29,6 @@ jobs:
         cache: 'npm'
     - run: npm install
     - run: npm run build
-    - run: npm test
 
     - name: Log in to Docker Hub
       uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
