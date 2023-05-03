@@ -2,12 +2,10 @@ FROM nginx:stable
 
 WORKDIR /usr/local/app
 
-COPY ./ /usr/local/app/
+COPY . /usr/local/app/
 
-RUN ls
+COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY /nginx.conf /etc/nginx/nginx.conf
-
-COPY /dist/my-app /usr/share/nginx/html
+COPY dist/my-app /usr/share/nginx/html
 
 EXPOSE 80
