@@ -38,13 +38,12 @@ jobs:
   package:
 
     runs-on: ${{ matrix.os }}
-
+    needs: build
     strategy:
       matrix:
         os: [ubuntu-latest]
         
     steps:
-    
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.1
         with:
