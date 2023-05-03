@@ -6,8 +6,8 @@ WORKDIR /usr/local/app
 
 RUN ls -laRt
 
-#RUN cp ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
-RUN cp ./dist /usr/share/nginx/html
+RUN ./dist /usr/share/nginx/html
 
 EXPOSE 80
