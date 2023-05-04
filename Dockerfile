@@ -4,8 +4,6 @@ COPY . /usr/local/app/
 
 WORKDIR /usr/local/app
 
-RUN ls -laRt
-
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
 COPY ./dist /usr/share/nginx/html
