@@ -30,10 +30,8 @@ jobs:
         ls
         sudo apt install ngrok
         ls
-        
-        echo $NGROK_TOKEN
-        ngrok help
-        ngrok config edit
+        echo "Hello"
+        cat /home/runner/.config/ngrok/ngrok.yml
         # ngrok http 8080
 
 # jobs:
