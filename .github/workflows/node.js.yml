@@ -31,7 +31,7 @@ jobs:
         sudo apt install ngrok
         ls
         echo $TEST_VARIABLE
-        cat /home/runner/.config/ngrok/ngrok.yml
+        ngrok config add-authtoken ghghg
         # ngrok http 8080
 
 # jobs:
