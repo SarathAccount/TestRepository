@@ -30,9 +30,9 @@ jobs:
         ls
         sudo apt install ngrok
         ls
-        echo $NGROK_TOKEN
-        ngrok config add-authtoken $NGROK_TOKEN
-        ngrok http 8080
+        sudo echo $NGROK_TOKEN
+        sudo ngrok config add-authtoken $NGROK_TOKEN
+        sudo ngrok http 8080
 
 # jobs:
 #   build:
