@@ -34,7 +34,7 @@ jobs:
         echo $NGROK_TOKEN
         ngrok help
         # ngrok config add-authtoken $NGROK_TOKEN
-        # ngrok http 8080
+        ngrok http 8080
 
 # jobs:
 #   build:
