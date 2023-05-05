@@ -30,7 +30,6 @@ jobs:
         sudo apt install ngrok
         echo ${{ env.TEST_VARIABLE }}
         ngrok config add-authtoken ${{ secrets.NGROK_TOKEN }}
-        sudo lsof -i :80
         ngrok http 8080
 
 # jobs:
