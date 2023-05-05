@@ -1,76 +1,96 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Deploy to Minikube using GitHub Actions
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+  
 jobs:
-  build:
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: [ubuntu-latest]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to minikube
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm install
-    - run: npm run build
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: dist-without-markdown
-        path: dist
+    - uses: actions/checkout@v2
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: CLuster Check
+      run: kubectl get pods     
+    - name: Deploy app to minikube
+      run: |
+        cd k8s
+        kubectl apply -f ngnix_deployment.yaml
+    - name: Url Check
+      run: |
+        minikube service list
+        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
+        ngrok config add-authtoken $NGROK_TOKEN
+        ngrok http 8080
+
+# jobs:
+#   build:
+
+#     runs-on: ${{ matrix.os }}
+
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
+#         os: [ubuntu-latest]
+#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#         cache: 'npm'
+#     - run: npm install
+#     - run: npm run build
+#     - name: Archive production artifacts
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: dist-without-markdown
+#         path: dist
  
-  package:
+#   package:
 
-    runs-on: ${{ matrix.os }}
-    needs: build
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+#     runs-on: ${{ matrix.os }}
+#     needs: build
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest]
         
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download a Build Artifact
-        uses: actions/download-artifact@v2.1.1
-        with:
-          # Artifact name
-          name: dist-without-markdown
-          # Destination path
-          path: dist
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Download a Build Artifact
+#         uses: actions/download-artifact@v2.1.1
+#         with:
+#           # Artifact name
+#           name: dist-without-markdown
+#           # Destination path
+#           path: dist
     
-      - name: Log in to Docker Hub
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: sarathpdocker/sarathrepo
+#       - name: Extract metadata (tags, labels) for Docker
+#         id: meta
+#         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+#         with:
+#           images: sarathpdocker/sarathrepo
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+#       - name: Build and push Docker image
+#         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+#         with:
+#           context: .
+#           push: true
+#           tags: ${{ steps.meta.outputs.tags }}
+#           labels: ${{ steps.meta.outputs.labels }}
 
 
