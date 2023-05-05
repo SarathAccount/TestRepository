@@ -30,7 +30,7 @@ jobs:
         sudo apt install ngrok
         echo ${{ env.TEST_VARIABLE }}
         ngrok config add-authtoken ${{ secrets.NGROK_TOKEN }}
-        ngrok http 80
+        kubectl get services
 
 # jobs:
 #   build:
