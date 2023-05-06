@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: ghcr.io/sarathaccount/demo-app:main
+        image: nginx:1.16
         ports:
         - containerPort: 80
 ---
